@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load tags_jinja %}
+{% block title %}Рейс{% if arguments.flight is not None %} №{{ arguments.flight.id }}{% endif %}{% endblock %}
+
+{% block content %}
+    <div class="row min-vh-100 flex-column flex-md-row pt-3">
+        <div class="col-md-2"></div>
+        <div class="col-12 col-md-8 p-0 flex-shrink-1">
+            {% if arguments.error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ arguments.error }}
+                </div>
+            {% endif %}
+            <div class="card mt-3 block">
+                <div class="card-body ">
+                    <div class="row align-items-center">
+                        <div class="col-xs-12 col-lg-3">
+                            <span style="color: #bbc0c4; font-size: 10pt">Направление</span>
+                            <h6>{{ arguments.flight.start_id }} - {{ arguments.flight.finish_id }}</h6>
+                        </div>
+                        <div class="col-xs-12 col-lg-3">
+                            <span style="color: #bbc0c4; font-size: 10pt">Отправление</span>
+                            <h6>{{ arguments.flight.date_start }}</h6>
+                        </div>
+                        <div class="col-xs-12 col-lg-3">
+                            <span style="color: #bbc0c4; font-size: 10pt">Прибытие</span>
+                            <h6>{{ arguments.flight.date_finish }}</h6>
+                        </div>
+                        <div class="col-xs-12 col-lg-3">
+                            <a class="btn btn-sm btn-dark btn-block" type="button"
+                               href="{% url 'main_url' %}"><span class="text-light">Назад</span></a>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-xs-12 col-lg-2">
+                            <span style="color: #bbc0c4; font-size: 10pt">№ рейса</span>
+                            <h6>{{ arguments.flight.id }}</h6>
+                        </div>
+                        <div class="col-xs-12 col-lg-3">
+                            <span style="color: #bbc0c4; font-size: 10pt">Автобус</span>
+                            <h6>{{ arguments.flight.bus_id.get_full_name }}</h6>
+                        </div>
+                        <div class="col-xs-12 col-lg-3">
+                            <span style="color: #bbc0c4; font-size: 10pt">Водитель</span>
+                            <h6>{{ arguments.flight.voditel_id.get_full_name }}</h6>
+                        </div>
+                        <div class="col-xs-12 col-lg-2">
+                            <span style="color: #bbc0c4; font-size: 10pt">Цена</span>
+                            <h6>{{ arguments.flight.price }}р.</h6>
+                        </div>
+                        <div class="col-xs-12 col-lg-2">
+                            <span style="color: #bbc0c4; font-size: 10pt">Мест</span>
+                            <h6>{{ arguments.flight|get_count_place }}</h6>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive mt-5">
+                        <table class="table table-sm table-hover">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Место</th>
+                                <th scope="col">ФИО клиента</th>
+                                <th scope="col">Дата рождения</th>
+                                <th scope="col">Документ</th>
+                                <th scope="col">Кассир</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if arguments.ticket_list|cheak_count_list > 0 %}
+                                {% for data in arguments.ticket_list %}
+                                    <tr role="button">
+                                        <th scope="row" data-toggle="tooltip"
+                                            data-placement="bottom">{{ data.place }}</th>
+                                        {% if data.is_buy == 0 %}
+                                            <td data-toggle="tooltip" data-placement="bottom"
+                                                colspan="5" class="center">
+                                                Билет еще не продан!
+                                            </td>
+                                        {% else %}
+                                            <td data-toggle="tooltip"
+                                                data-placement="bottom">{{ data.get_client_fio }}</td>
+                                            <td data-toggle="tooltip" data-placement="bottom">{{ data.client_birthday }}</td>
+                                            <td data-toggle="tooltip" data-placement="bottom">{{ data.get_client_doc }}</td>
+                                            <td data-toggle="tooltip" data-placement="bottom">{{ data.cashier_id.get_full_name }}</td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr role="button">
+                                    <th scope="row" data-toggle="tooltip" data-placement="bottom"
+                                        colspan="5" class="center">
+                                        {{ arguments.name_tag.1 }} еще не добавлены!
+                                    </th>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load tags_jinja %}
+{% block title %}Автобусы{% endblock %}
+
+{% block content %}
+    <div class="row min-vh-100 flex-column flex-md-row pt-3">
+        <div class="col-md-2"></div>
+        <div class="col-12 col-md-8 p-0 flex-shrink-1">
+            {% if arguments.error %}
+                <div class="alert alert-danger mt-3" role="alert">
+                    {{ arguments.error }}
+                </div>
+            {% endif %}
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn btn-dark float-right" role="button" data-toggle="modal"
+                            data-target="#AddModal">
+                        Добавить автобус
+                    </button>
+                </div>
+            </div>
+
+
+
+            {% if arguments.bus_list|cheak_count_list > 0 %}
+                {% for bus in arguments.bus_list %}
+                    <div class="card mt-3 block">
+                        <div class="card-body ">
+                            <div class="row align-items-center">
+                                <div class="col-xs-12 col-lg-3">
+                                    <span style="color: #bbc0c4; font-size: 10pt">Гос номер</span>
+                                    <h6>{{ bus.gos_number }}</h6>
+                                </div>
+                                <div class="col-xs-12 col-lg-3">
+                                    <span style="color: #bbc0c4; font-size: 10pt">Марка</span>
+                                    <h6>{{ bus.marka }}</h6>
+                                </div>
+                                <div class="col-xs-12 col-lg-3">
+                                    <span style="color: #bbc0c4; font-size: 10pt">Число мест</span>
+                                    <h6>{{ bus.place_count }}</h6>
+                                </div>
+                                <div class="col-xs-12 col-lg-3">
+                                    <button type="button" class="btn btn-sm btn-danger btn-block" role="button"
+                                            data-toggle="modal"
+                                            data-target="#DelModal_{{ bus.id }}">
+                                        Удалить автобус
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <h4 class="text-center text-danger mt-3">Автобусы не найдены!</h4>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="AddModal" tabindex="-1" role="dialog" aria-labelledby="AddModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="AddModalLabel">Добавление нового автобуса</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post" action="{% url 'bus_list_url' %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        {% for field in arguments.form %}
+                            <div class="form-group row">
+                                <label for="{{ field.id_for_label }}"
+                                       class="col-sm-4 col-form-label">{{ field.label }}</label>
+                                <div class="col-sm-8">
+                                    {{ field }}
+                                </div>
+                            </div>
+                            {% if field.errors %}
+                                <div class="alert alert-danger">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-dark btn-block">Добавить</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if arguments.bus_list|cheak_count_list > 0 %}
+        {% for data in arguments.bus_list %}
+            <!-- Del Modal {{ data.id }} -->
+            <div class="modal fade" id="DelModal_{{ data.id }}" tabindex="-1" role="dialog"
+                 aria-labelledby="DelModalLabel_{{ data.id }}"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="DelModalLabel_{{ data.id }}">Удаление автобуса</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="{% url 'bus_edit_url' data.id 'delete' %}">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <p>Вы действительно хотите удалить данный автобус?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button formmethod="get" type="submit" class="btn btn-danger">Удалить</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

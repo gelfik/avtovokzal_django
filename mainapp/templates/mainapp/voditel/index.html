@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load tags_jinja %}
+{% block title %}Рейсы{% endblock %}
+
+{% block content %}
+    <div class="row min-vh-100 flex-column flex-md-row pt-3">
+        <div class="col-md-2"></div>
+        <div class="col-12 col-md-8 p-0 flex-shrink-1">
+            {% if arguments.error %}
+                <div class="alert alert-danger mt-3" role="alert">
+                    {{ arguments.error }}
+                </div>
+            {% endif %}
+
+            <form method="get" action="{% url 'main_url' %}">
+                <div class="row">
+                    <div class="col-5">
+                        <input class="form-control" type="search" placeholder="Отправление"
+                               aria-label="Search" name="q_start" {% if arguments.query_start_data %}
+                               value="{{ arguments.query_start_data }}" {% endif %}>
+                    </div>
+                    <div class="col-5">
+                        <input class="form-control" type="search" placeholder="Прибытие"
+                               aria-label="Search" name="q_finish" {% if arguments.query_finish_data %}
+                               value="{{ arguments.query_finish_data }}" {% endif %}>
+                    </div>
+                    <div class="col-2">
+                        <button type="submit" class="btn btn-dark btn-block">Поиск</button>
+                    </div>
+                </div>
+            </form>
+
+            {% if arguments.flight_list|cheak_count_list > 0 %}
+                {% for flight in arguments.flight_list %}
+                    <div class="card mt-3 block">
+                        <div class="card-body ">
+                            <div class="row align-items-center">
+                                <div class="col-xs-12 col-lg-3">
+                                    <span style="color: #bbc0c4; font-size: 10pt">Направление</span>
+                                    <h6>{{ flight.start_id }} - {{ flight.finish_id }}</h6>
+                                </div>
+                                <div class="col-xs-12 col-lg-3">
+                                    <span style="color: #bbc0c4; font-size: 10pt">Отправление</span>
+                                    <h6>{{ flight.date_start }}</h6>
+                                </div>
+                                <div class="col-xs-12 col-lg-3">
+                                    <span style="color: #bbc0c4; font-size: 10pt">Прибытие</span>
+                                    <h6>{{ flight.date_finish }}</h6>
+                                </div>
+                                <div class="col-xs-12 col-lg-3">
+                                    <a class="btn btn-sm btn-dark btn-block" type="button"
+                                       href="{% url 'flight_url' flight.id %}"><span class="text-light">Просмотреть рейс!</span></a>
+                                </div>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-xs-12 col-lg-2">
+                                    <span style="color: #bbc0c4; font-size: 10pt">№ рейса</span>
+                                    <h6>{{ flight.id }}</h6>
+                                </div>
+                                <div class="col-xs-12 col-lg-3">
+                                    <span style="color: #bbc0c4; font-size: 10pt">Автобус</span>
+                                    <h6>{{ flight.bus_id.get_full_name }}</h6>
+                                </div>
+                                <div class="col-xs-12 col-lg-3">
+                                    <span style="color: #bbc0c4; font-size: 10pt">Водитель</span>
+                                    <h6>{{ flight.voditel_id.get_full_name }}</h6>
+                                </div>
+                                <div class="col-xs-12 col-lg-2">
+                                    <span style="color: #bbc0c4; font-size: 10pt">Цена</span>
+                                    <h6>{{ flight.price }}р.</h6>
+                                </div>
+                                <div class="col-xs-12 col-lg-2">
+                                    <span style="color: #bbc0c4; font-size: 10pt">Мест</span>
+                                    <h6>{{ flight|get_count_place }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <h4 class="text-center text-danger mt-3">Рейсы не найдены!</h4>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}

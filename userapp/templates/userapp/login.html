@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Авторизация{% endblock %}
+
+{% block content %}
+    <div class="row min-vh-100 flex-column flex-md-row align-items-center">
+        <div class="col-md-4"></div>
+        <div class="col-12 col-md-4 p-0 flex-shrink-1">
+            {% if arguments.error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ arguments.error }}
+                </div>
+            {% endif %}
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" action="{% url 'login_url' %}">
+                        {% csrf_token %}
+                        {% for field in arguments.form %}
+                            <div class="form-group">
+                                {% if field.errors %}
+                                    <div class="alert alert-danger">
+                                        {{ field.errors }}
+                                    </div>
+                                {% endif %}
+                                {#                                                {{ field.label }}#}
+                                {{ field }}
+                            </div>
+                        {% endfor %}
+                        <input type="hidden" name="next" value="{{ arguments.next }}"/>
+                        <button type="submit" class="btn btn-light btn-block">Войти</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

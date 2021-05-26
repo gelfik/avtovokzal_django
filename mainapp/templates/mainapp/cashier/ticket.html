@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load tags_jinja %}
+{% block title %}Билет {% if arguments.ticket is not None %} №{{ arguments.ticket.id }}{% endif %}{% endblock %}
+
+{% block content %}
+    <div class="row min-vh-100 flex-column flex-md-row pt-3">
+        <div class="col-md-2"></div>
+        <div class="col-12 col-md-8 p-0 flex-shrink-1">
+            {% if arguments.error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ arguments.error }}
+                </div>
+            {% endif %}
+            <div class="card mt-3 block">
+                <div class="card-body ">
+                    <div class="row align-items-center">
+                        <div class="col-xs-12 col-lg-9">
+                            <h5>Билет № {{ arguments.ticket.id }}</h5>
+                        </div>
+                        <div class="col-xs-12 col-lg-3">
+                            <a class="btn btn-sm btn-dark btn-block" type="button"
+                               href="{% url 'main_url' %}"><span class="text-light">Назад</span></a>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-xs-12 col-lg-3">
+                            <span style="color: #bbc0c4; font-size: 10pt">Направление</span>
+                            <h6>{{ arguments.ticket.flight_id.start_id }}
+                                - {{ arguments.ticket.flight_id.finish_id }}</h6>
+                        </div>
+                        <div class="col-xs-12 col-lg-3">
+                            <span style="color: #bbc0c4; font-size: 10pt">Отправление</span>
+                            <h6>{{ arguments.ticket.flight_id.date_start }}</h6>
+                        </div>
+                        <div class="col-xs-12 col-lg-3">
+                            <span style="color: #bbc0c4; font-size: 10pt">Прибытие</span>
+                            <h6>{{ arguments.ticket.flight_id.date_finish }}</h6>
+                        </div>
+                        <div class="col-xs-12 col-lg-3">
+
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-xs-12 col-lg-2">
+                            <span style="color: #bbc0c4; font-size: 10pt">№ рейса</span>
+                            <h6>{{ arguments.ticket.flight_id.id }}</h6>
+                        </div>
+                        <div class="col-xs-12 col-lg-3">
+                            <span style="color: #bbc0c4; font-size: 10pt">Автобус</span>
+                            <h6>{{ arguments.ticket.flight_id.bus_id.get_full_name }}</h6>
+                        </div>
+                        <div class="col-xs-12 col-lg-3">
+                            <span style="color: #bbc0c4; font-size: 10pt">Водитель</span>
+                            <h6>{{ arguments.ticket.flight_id.voditel_id.get_full_name }}</h6>
+                        </div>
+                        <div class="col-xs-12 col-lg-2">
+                            <span style="color: #bbc0c4; font-size: 10pt">Цена</span>
+                            <h6>{{ arguments.ticket.flight_id.price }}р.</h6>
+                        </div>
+                        <div class="col-xs-12 col-lg-2">
+                            <span style="color: #bbc0c4; font-size: 10pt">Место</span>
+                            <h6>{{ arguments.ticket.place }}</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
